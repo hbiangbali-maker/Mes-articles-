@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Publications scientifiques</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=Public+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+
+  /* ============================================================
+     POUR AJOUTER UN ARTICLE : modifiez le tableau ARTICLES
+     un peu plus bas dans le fichier (section <script>).
+     Chaque article a besoin de :
+       titre, resume, date, motsCles, pdf (chemin du fichier)
+     ============================================================ */
+
+  :root{
+    --ink:#132A33;
+    --paper:#F6F2E9;
+    --paper-dim:#EDE7D8;
+    --seal:#B0793A;
+    --seal-dark:#8B5A24;
+    --accent:#6E3B32;
+    --line: rgba(19,42,51,0.14);
+  }
+
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Public Sans', sans-serif;
+    font-size:16px;
+    line-height:1.5;
+  }
+
+  .wrap{max-width:900px;margin:0 auto;padding:0 28px;}
+
+  /* ---------- HEADER ---------- */
+  header{
+    background:var(--ink);
+    color:var(--paper);
+    padding:72px 0 56px;
+    position:relative;
+    overflow:hidden;
+  }
+  header::before{
+    content:"";
+    position:absolute;
+    right:-60px; top:-60px;
+    width:260px; height:260px;
+    border:1px solid rgba(246,242,233,0.12);
+    border-radius:50%;
+  }
+  header::after{
+    content:"";
+    position:absolute;
+    right:20px; top:40px;
+    width:160px; height:160px;
+    border:1px solid rgba(246,242,233,0.1);
+    border-radius:50%;
+  }
+  .eyebrow{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12.5px;
+    letter-spacing:0.12em;
+    text-transform:uppercase;
+    color:var(--seal);
+    margin:0 0 18px;
+  }
+  h1{
+    font-family:'Source Serif 4', serif;
+    font-weight:700;
+    font-size:clamp(34px, 5vw, 52px);
+    line-height:1.08;
+    margin:0 0 18px;
+    max-width:12ch;
+  }
+  header p.lead{
+    max-width:52ch;
+    color:rgba(246,242,233,0.78);
+    font-size:17px;
+    margin:0;
+  }
+
+  /* ---------- BARRE DE RECHERCHE / FILTRE ---------- */
+  .toolbar{
+    display:flex;
+    gap:12px;
+    flex-wrap:wrap;
+    align-items:center;
+    padding:22px 0;
+    border-bottom:1px solid var(--line);
+    margin-bottom:8px;
+  }
+  .toolbar input{
+    flex:1;
+    min-width:200px;
+    font-family:'Public Sans', sans-serif;
+    font-size:15px;
+    padding:11px 14px;
+    border:1px solid var(--line);
+    border-radius:3px;
+    background:#fff;
+    color:var(--ink);
+  }
+  .toolbar input:focus{outline:2px solid var(--seal); outline-offset:1px;}
+  .count{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12.5px;
+    color:rgba(19,42,51,0.55);
+    white-space:nowrap;
+  }
+
+  /* ---------- LISTE D'ARTICLES ---------- */
+  main{padding:8px 0 80px;}
+  .article{
+    display:grid;
+    grid-template-columns:64px 1fr auto;
+    gap:22px;
+    padding:30px 0;
+    border-bottom:1px solid var(--line);
+    align-items:start;
+  }
+  .seal{
+    width:56px;height:56px;
+    border-radius:50%;
+    border:1.5px solid var(--seal);
+    display:flex;align-items:center;justify-content:center;
+    font-family:'Source Serif 4', serif;
+    font-weight:700;
+    font-size:17px;
+    color:var(--seal-dark);
+    flex-shrink:0;
+    position:relative;
+  }
+  .seal::before{
+    content:"";
+    position:absolute;
+    inset:5px;
+    border:1px dashed rgba(176,121,58,0.45);
+    border-radius:50%;
+  }
+  .a-date{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12px;
+    color:rgba(19,42,51,0.5);
+    letter-spacing:0.04em;
+    margin-bottom:6px;
+    text-transform:uppercase;
+  }
+  .a-title{
+    font-family:'Source Serif 4', serif;
+    font-weight:600;
+    font-size:21px;
+    margin:0 0 8px;
+    line-height:1.3;
+  }
+  .a-resume{
+    color:rgba(19,42,51,0.75);
+    font-size:14.5px;
+    margin:0 0 12px;
+    max-width:60ch;
+  }
+  .tags{display:flex;flex-wrap:wrap;gap:7px;}
+  .tag{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;
+    padding:3px 9px;
+    border:1px solid var(--line);
+    border-radius:20px;
+    color:rgba(19,42,51,0.6);
+  }
+  .dl{
+    align-self:center;
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12.5px;
+    letter-spacing:0.03em;
+    text-decoration:none;
+    color:var(--paper);
+    background:var(--accent);
+    padding:10px 16px;
+    border-radius:3px;
+    white-space:nowrap;
+    transition:background 0.15s ease;
+  }
+  .dl:hover{background:var(--seal-dark);}
+  .dl:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
+
+  .empty{
+    padding:60px 0;
+    text-align:center;
+    color:rgba(19,42,51,0.5);
+    font-family:'IBM Plex Mono', monospace;
+    font-size:13.5px;
+  }
+
+  footer{
+    border-top:1px solid var(--line);
+    padding:26px 0 50px;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12px;
+    color:rgba(19,42,51,0.45);
+  }
+
+  @media (max-width:640px){
+    .article{grid-template-columns:44px 1fr; }
+    .dl{grid-column:1/-1; justify-content:center; margin-top:6px;}
+    .seal{width:40px;height:40px;font-size:13px;}
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    html{scroll-behavior:auto;}
+    .dl{transition:none;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <p class="eyebrow">Recueil de publications</p>
+    <h1>Articles scientifiques</h1>
+    <p class="lead">Publications de recherche disponibles en libre téléchargement, format PDF.</p>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="toolbar">
+    <input type="text" id="search" placeholder="Rechercher par titre, mot-clé ou résumé…" aria-label="Rechercher un article">
+    <span class="count" id="count"></span>
+  </div>
+
+  <main id="list"></main>
+</div>
+
+<footer>
+  <div class="wrap">Site personnel de publications scientifiques</div>
+</footer>
+
+<script>
+  /* ==============================================================
+     LISTE DES ARTICLES — modifiez ce tableau pour ajouter,
+     retirer ou corriger un article. Copiez le bloc {...} pour
+     un nouvel article.
+
+     - titre     : titre de l'article
+     - resume    : court résumé (1-2 phrases)
+     - date      : ex. "2025" ou "Mars 2025"
+     - motsCles  : tableau de mots-clés
+     - pdf       : chemin ou lien vers le fichier PDF
+                   (placez le PDF dans le même dossier que ce
+                   fichier HTML, puis mettez juste son nom ici,
+                   ex. "mon-article.pdf")
+     ============================================================== */
+
+  const ARTICLES = [
+    {
+      titre: "Conditions de travail et résilience des infirmiers dans les hôpitaux publics de Kisangani",
+      resume: "Étude sur les conditions de travail et les mécanismes de résilience développés par le personnel infirmier en contexte hospitalier public.",
+      date: "2025",
+      motsCles: ["santé publique", "résilience", "Kisangani"],
+      pdf: "article-1.pdf"
+    }
+  ];
+
+  const listEl = document.getElementById('list');
+  const searchEl = document.getElementById('search');
+  const countEl = document.getElementById('count');
+
+  function initiales(titre){
+    const mots = titre.split(' ').filter(w => w.length > 2);
+    return (mots[0]?.[0] || '') + (mots[1]?.[0] || '');
+  }
+
+  function render(items){
+    listEl.innerHTML = '';
+    countEl.textContent = items.length + (items.length > 1 ? ' articles' : ' article');
+
+    if(items.length === 0){
+      listEl.innerHTML = '<div class="empty">Aucun article ne correspond à cette recherche.</div>';
+      return;
+    }
+
+    items.forEach(a => {
+      const el = document.createElement('article');
+      el.className = 'article';
+      el.innerHTML = `
+        <div class="seal" aria-hidden="true">${initiales(a.titre).toUpperCase()}</div>
+        <div>
+          <p class="a-date">${a.date}</p>
+          <h2 class="a-title">${a.titre}</h2>
+          <p class="a-resume">${a.resume}</p>
+          <div class="tags">${a.motsCles.map(m => `<span class="tag">${m}</span>`).join('')}</div>
+        </div>
+        <a class="dl" href="${a.pdf}" download>↓ PDF</a>
+      `;
+      listEl.appendChild(el);
+    });
+  }
+
+  function filtrer(q){
+    q = q.trim().toLowerCase();
+    if(!q) return ARTICLES;
+    return ARTICLES.filter(a =>
+      a.titre.toLowerCase().includes(q) ||
+      a.resume.toLowerCase().includes(q) ||
+      a.motsCles.some(m => m.toLowerCase().includes(q))
+    );
+  }
+
+  searchEl.addEventListener('input', e => render(filtrer(e.target.value)));
+  render(ARTICLES);
+</script>
+
+</body>
+</html>
